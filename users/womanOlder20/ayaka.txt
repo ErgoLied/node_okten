@@ -1,0 +1,3 @@
+name: ayaka
+gender: female
+age: 22

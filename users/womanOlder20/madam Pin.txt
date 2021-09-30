@@ -1,0 +1,3 @@
+name: madam Pin
+gender: female
+age: 66

@@ -1,0 +1,3 @@
+name: ded
+gender: male
+age: 666

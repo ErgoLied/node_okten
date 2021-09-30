@@ -1,0 +1,3 @@
+name: razor
+gender: male
+age: 18
