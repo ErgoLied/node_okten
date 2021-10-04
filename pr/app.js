@@ -1,3 +1,11 @@
+// Okten Mentor, [30.09.21 22:10]
+// Використовуй erly return pattern. Уникай else if
+//
+//     Okten Mentor, [30.09.21 22:14]
+// Стрічка 32 та інші такі ж :
+//     Шлях будуй за допомогою path.join()
+// Дані передай JSON.stringify(value)
+
 const fs = require('fs');
 const path = require('path');
 
@@ -27,27 +35,30 @@ const users = [
     { name: 'madam Pin', gender: 'female', age: 66 },
 ];
 
-const createUsrFile = (value) => {
-    if (value.gender === 'male' && value.age<20){
-        fs.writeFile(`${manYounger20Path}/${value.name}.txt`, `name: ${value.name}\ngender: ${value.gender}\nage: ${value.age}`, (err) => {
-            if (err) console.log(err);
-        });
-    }
-    else if (value.gender === 'male' && value.age>=20){
-        fs.writeFile(`${manOlder20Path}/${value.name}.txt`, `name: ${value.name}\ngender: ${value.gender}\nage: ${value.age}`, (err) => {
-            if (err) console.log(err);
-        });
-    }
-    else if (value.gender === 'female' && value.age<20){
-        fs.writeFile(`${womanYounger20Path}/${value.name}.txt`, `name: ${value.name}\ngender: ${value.gender}\nage: ${value.age}`, (err) => {
-            if (err) console.log(err);
-        });
-    }
-    else {
-        fs.writeFile(`${womanOlder20Path}/${value.name}.txt`, `name: ${value.name}\ngender: ${value.gender}\nage: ${value.age}`, (err) => {
-            if (err) console.log(err);
-        });
-    }
-}
+users.map(value => {
+    const user = JSON.stringify(value);
 
-users.map(value => createUsrFile(value));
+    if (value.gender === 'male' && value.age < 20) {
+        return fs.writeFile(path.join(manYounger20Path, value.name), user, (err) => {
+            if (err) console.log(err);
+        });
+    }
+
+    if (value.gender === 'male' && value.age >= 20) {
+        return fs.writeFile(path.join(manOlder20Path, value.name), user, (err) => {
+            if (err) console.log(err);
+        });
+    }
+
+    if (value.gender === 'female' && value.age < 20) {
+        return fs.writeFile(path.join(womanYounger20Path, value.name), user, (err) => {
+            if (err) console.log(err);
+        });
+    }
+
+    if (value.gender === 'female' && value.age >= 20) {
+        return fs.writeFile(path.join(womanOlder20Path, value.name), user, (err) => {
+            if (err) console.log(err);
+        });
+    }
+})

@@ -1,3 +1,0 @@
-name: bennet
-gender: male
-age: 15

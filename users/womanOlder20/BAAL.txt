@@ -1,3 +1,0 @@
-name: BAAL
-gender: female
-age: 2000

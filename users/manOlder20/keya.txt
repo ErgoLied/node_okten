@@ -1,3 +1,0 @@
-name: keya
-gender: male
-age: 25

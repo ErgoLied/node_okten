@@ -1,3 +1,0 @@
-name: yoimiya
-gender: female
-age: 17
