@@ -1,0 +1,12 @@
+[
+  { "id": 1, "name": "razor", "gender": "male", "age": 18 },
+  { "id": 2, "name": "xiao", "gender": "male", "age": 20 },
+  { "id": 3, "name": "qiqi", "gender": "female", "age": 12 },
+  { "id": 4, "name": "ayaka", "gender": "female", "age": 22 },
+  { "id": 5, "name": "keya", "gender": "male", "age": 25 },
+  { "id": 6, "name": "yoimiya", "gender": "female", "age": 17 },
+  { "id": 7, "name": "ded", "gender": "male", "age": 666 },
+  { "id": 8, "name": "bennet", "gender": "male", "age": 15 },
+  { "id": 9, "name": "BAAL", "gender": "female", "age": 2000 },
+  { "id": 10, "name": "madam Pin", "gender": "female", "age": 66 }
+]
