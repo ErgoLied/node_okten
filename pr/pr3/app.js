@@ -2,16 +2,17 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const carRouter = require('./routers/car.router');
+const {MONGO_CONNECT_URL, PORT} = require("./configs/config");
 
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/okten-pr-node');
+mongoose.connect(MONGO_CONNECT_URL);
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 app.use('/cars', carRouter);
 
-app.listen(5000, () => {
-    console.log('listen 5000');
+app.listen(PORT, () => {
+    console.log(`listen ${PORT}`);
 });
