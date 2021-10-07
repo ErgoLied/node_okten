@@ -1,9 +1,10 @@
 const router = require('express').Router();
 
 const carController = require('../controllers/car.controller');
+const carMiddleware = require('../middlewares/car.middleware');
 
 router.get('/', carController.getCars);
-router.post('/', carController.createCar);
+router.post('/', carMiddleware.createCarMiddleware, carController.createCar);
 
 router.get('/:carId', carController.getCarById);
 router.put('/:carId', carController.updateCar);
