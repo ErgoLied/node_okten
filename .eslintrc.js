@@ -39,11 +39,7 @@ module.exports = {
         'newline-per-chained-call': 'error',
         'new-parens': 'error',
         'no-alert': 'error',
-        semi: [
-            'error',
-            'always',
-            {omitLastInOneLineBlock: true}
-        ],
+        semi: 'error',
         'no-duplicate-imports': 'error',
         'no-nested-ternary': 'error',
         'no-mixed-spaces-and-tabs': 'error',
