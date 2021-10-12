@@ -5,9 +5,13 @@ const userUtil = require('../util/user.util');
 module.exports = {
     getUsers: async (req, res) => {
         try {
-            const users = await User.find();
+            const users = await User.find().lean();
+
+            users.forEach(user => userUtil.userNormalize(user));
+
             res.json(users);
-        } catch (e) {
+        }
+        catch (e) {
             res.json(e.message);
         }
     },
@@ -18,9 +22,9 @@ module.exports = {
             const user = await User.findById(userId).lean();
 
             const normUser = userUtil.userNormalize(user);
-
             res.json(normUser);
-        } catch (e) {
+        }
+        catch (e) {
             res.json(e.message);
         }
     },
@@ -28,9 +32,11 @@ module.exports = {
     createUser: async (req, res) => {
         try {
             const hashPass = await passService.hash(req.body.password);
-            const user = await User.create({...req.body, password: hashPass});
-            res.json(user);
-        } catch (e) {
+            const newUser = await User.create({...req.body, password: hashPass});
+
+            res.json(`${newUser.name} was created`);
+        }
+        catch (e) {
             res.json(e.message);
         }
     },
@@ -38,12 +44,12 @@ module.exports = {
     updateUser: async (req, res) => {
         try {
             const {userId} = req.params;
-            await User.findByIdAndUpdate(userId, req.body).then(() => {
-                User.findById(userId).then((user) => {
-                    res.json(user);
-                });
-            });
-        } catch (e) {
+
+            await User.findByIdAndUpdate(userId, {name: req.body.name})
+                .then(() => User.findById(userId).select('-password -__v')
+                    .then((user) => res.json(user)));
+        }
+        catch (e) {
             res.json(e.message);
         }
     },
@@ -51,10 +57,10 @@ module.exports = {
     deleteUser: async (req, res) => {
         try {
             const {userId} = req.params;
-            await User.findByIdAndDelete(userId).then((user) => {
-                res.json(`${user} user was deleted`);
-            });
-        } catch (e) {
+            await User.findByIdAndDelete(userId).select('-password, -__v')
+                .then((user) => res.json(`USER WAS DELETED ${user}`));
+        }
+        catch (e) {
             res.json(e.message);
         }
     }

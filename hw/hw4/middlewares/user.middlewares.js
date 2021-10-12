@@ -3,12 +3,14 @@ const userValidator = require('../validators/user.validator');
 
 module.exports = {
     createUserMW: async (req, res, next) => {
-        try{
-            const {login} = req.body;
-            const userLogin = await User.findOne({login});
-            if(userLogin){
-                throw new Error('this login already exists!');
+        try {
+            const {email} = req.body;
+            const userEmail = await User.findOne({email});
+
+            if (userEmail) {
+                throw new Error('this email already exists!');
             }
+
             next();
         }
         catch (e) {
@@ -20,9 +22,11 @@ module.exports = {
         try {
             const {userId} = req.params;
             const user = await User.findOne({_id: userId});
-            if(!user){
-                throw new Error('we havn\'t user with id like this');
+
+            if (!user) {
+                throw new Error('user not found');
             }
+
             next();
         }
         catch (e) {
@@ -34,7 +38,7 @@ module.exports = {
         try {
             const {error, value} = userValidator.createUserValidator.validate(req.body);
 
-            if(error){
+            if (error) {
                 throw new Error(error.details[0].message);
             }
 

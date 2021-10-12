@@ -1,11 +1,12 @@
-const User = require('../database/User');
+const {userNormalize} = require("../util/user.util");
 
 module.exports = {
-    authorization: async (req, res) => {
+    authorization: (req, res) => {
         try {
-            const{login} = req.body;
-            await User.find({login});
-            res.json('OK');
+            const user = req.body;
+
+            const normUser = userNormalize(user);
+            res.json(normUser);
         }
         catch (e) {
             res.json(e.message);
