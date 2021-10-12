@@ -5,9 +5,12 @@ module.exports = {
         try {
             const {login, password} = req.body;
             const user = await User.findOne({login});
+
             if(!user || user.password !== password){
                 throw new Error('fail');
             }
+
+            req.body = user;
             next();
         }
         catch (e) {

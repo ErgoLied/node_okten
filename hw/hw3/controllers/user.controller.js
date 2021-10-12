@@ -5,17 +5,17 @@ module.exports = {
         try {
             const users = await User.find();
             res.json(users);
-        } catch (e) {
+        }
+        catch (e) {
             res.json(e.message);
         }
     },
 
-    getUserById: async (req, res) => {
+    getUserById: (req, res) => {
         try {
-            const {userId} = req.params;
-            const user = await User.findById(userId);
-            res.json(user);
-        } catch (e) {
+            res.json(req.body);
+        }
+        catch (e) {
             res.json(e.message);
         }
     },
@@ -24,7 +24,8 @@ module.exports = {
         try {
             const user = await User.create(req.body);
             res.json(user);
-        } catch (e) {
+        }
+        catch (e) {
             res.json(e.message);
         }
     },
@@ -32,12 +33,11 @@ module.exports = {
     updateUser: async (req, res) => {
         try {
             const {userId} = req.params;
-            await User.findByIdAndUpdate(userId, req.body).then(() => {
-                User.findById(userId).then((user) => {
-                    res.json(user);
-                });
-            });
-        } catch (e) {
+            await User.findByIdAndUpdate(userId, req.body)
+                .then(() => User.findById(userId)
+                    .then((user) => res.json(user)));
+        }
+        catch (e) {
             res.json(e.message);
         }
     },
@@ -45,10 +45,10 @@ module.exports = {
     deleteUser: async (req, res) => {
         try {
             const {userId} = req.params;
-            await User.findByIdAndDelete(userId).then((user) => {
-                res.json(`${user} user was deleted`);
-            });
-        } catch (e) {
+            await User.findByIdAndDelete(userId)
+                .then(res.json(`USER WAS DELETED ${req.body}`));
+        }
+        catch (e) {
             res.json(e.message);
         }
     }

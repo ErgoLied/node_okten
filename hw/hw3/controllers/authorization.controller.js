@@ -1,11 +1,7 @@
-const User = require('../database/User');
-
 module.exports = {
-    authorization: async (req, res) => {
+    authorization: (req, res) => {
         try {
-            const{login} = req.body;
-            await User.find({login});
-            res.json('OK');
+            res.json(req.body);
         }
         catch (e) {
             res.json(e.message);
