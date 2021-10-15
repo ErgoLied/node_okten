@@ -26,4 +26,15 @@ const createUserValidator = Joi.object({
         .trim()
 });
 
-module.exports = {createUserValidator};
+const updateUserValidator = Joi.object({
+    name: Joi
+        .string()
+        .alphanum()
+        .min(2)
+        .max(20)
+        .trim()
+        .required()
+});
+
+
+module.exports = {createUserValidator, updateUserValidator};
