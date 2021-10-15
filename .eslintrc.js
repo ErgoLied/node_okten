@@ -124,6 +124,10 @@ module.exports = {
             'error',
             'as-needed'
         ],
+        quotes: [
+            'error',
+            'single'
+        ],
         radix: 'error',
         'require-await': 'error',
         'sort-imports': [

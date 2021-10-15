@@ -45,9 +45,11 @@ module.exports = {
         try {
             const {userId} = req.params;
 
-            await User.findByIdAndUpdate(userId, {name: req.body.name})
-                .then(() => User.findById(userId).select('-password -__v')
-                    .then((user) => res.json(user)));
+            let user = await User.findByIdAndUpdate(userId, {name: req.body.name}, {new: true});
+
+            user = userUtil.userNormalize(user.toObject());
+
+            res.json(user);
         }
         catch (e) {
             res.json(e.message);
@@ -57,8 +59,9 @@ module.exports = {
     deleteUser: async (req, res) => {
         try {
             const {userId} = req.params;
-            await User.findByIdAndDelete(userId).select('-password, -__v')
-                .then((user) => res.json(`USER WAS DELETED ${user}`));
+            await User.findByIdAndDelete(userId);
+
+            res.json(`USER ${userId} WAS DELETED`);
         }
         catch (e) {
             res.json(e.message);

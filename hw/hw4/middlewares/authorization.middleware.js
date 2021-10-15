@@ -1,5 +1,5 @@
 const User = require('../database/User');
-const passService = require("../services/password.service");
+const passService = require('../services/password.service');
 
 module.exports = {
     authorizationMW: async (req, res, next) => {
@@ -8,7 +8,7 @@ module.exports = {
             const user = await User.findOne({email}).lean();
 
             if(!user){
-                throw new Error('fail');
+                throw new Error('wrong email or password');
             }
 
             await passService.compare(password, user.password);

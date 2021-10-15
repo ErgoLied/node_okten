@@ -1,8 +1,9 @@
 const router = require('express').Router();
 
 const authController = require('../controllers/authorization.controller');
-const {authorizationMW} = require("../middlewares/authorization.middleware");
+const userMW = require('../middlewares/user.middlewares');
+const {authorizationMW} = require('../middlewares/authorization.middleware');
 
-router.post('/', authorizationMW, authController.authorization);
+router.post('/', userMW.isUserBodyValidMW, authorizationMW, authController.authorization);
 
 module.exports = router;

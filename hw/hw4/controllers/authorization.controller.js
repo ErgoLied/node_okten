@@ -1,4 +1,4 @@
-const {userNormalize} = require("../util/user.util");
+const {userNormalize} = require('../util/user.util');
 
 module.exports = {
     authorization: (req, res) => {
