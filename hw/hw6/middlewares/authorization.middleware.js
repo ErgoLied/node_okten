@@ -62,6 +62,7 @@ module.exports = {
             }
 
             req.user = tokenResponse.user_id;
+            req.token = tokenResponse.access_token;
 
             next();
         }
@@ -86,7 +87,7 @@ module.exports = {
                 throw new ErrorHandler('invalid token', 401);
             }
 
-            await OAuth.remove({refresh_token: token});
+            await OAuth.deleteOne({refresh_token: token});
 
             req.user = tokenResponse.user_id;
 

@@ -21,5 +21,18 @@ module.exports = {
         catch (e) {
             res.json(e.message);
         }
+    },
+
+    logout: async (req, res) => {
+        try {
+            const {token} = req;
+
+            await OAuth.findOneAndDelete({access_token: token});
+
+            res.json('Good bye~');
+        }
+        catch (e) {
+            res.json(e.message);
+        }
     }
 };
