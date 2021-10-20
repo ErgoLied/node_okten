@@ -2,6 +2,7 @@ const User = require('../database/User');
 const passService = require('../services/password.service');
 const ErrorHandler = require('../errors/ErrorHandler');
 const {authValidator} = require('../validators');
+const {ERR_MSG, STATUS_CODE} = require('../configs');
 
 module.exports = {
     authorizationMW: async (req, res, next) => {
@@ -13,7 +14,7 @@ module.exports = {
                 .lean();
 
             if(!user){
-                throw new ErrorHandler('Wrong email or password', 400);
+                throw new ErrorHandler(ERR_MSG.WRONG_EMAIL_OR_PASSWORD, STATUS_CODE.BAD_REQUEST);
             }
 
             await passService.compare(password, user.password);
@@ -22,7 +23,7 @@ module.exports = {
             next();
         }
         catch (e) {
-            res.json(e.message);
+            next(e);
         }
     },
 
@@ -31,14 +32,14 @@ module.exports = {
             const {error, value} = authValidator.authValidate.validate(req.body);
 
             if (error) {
-                throw new ErrorHandler('Wrong email or password', 400);
+                throw new ErrorHandler(ERR_MSG.WRONG_EMAIL_OR_PASSWORD, STATUS_CODE.BAD_REQUEST);
             }
 
             req.body = value;
             next();
         }
         catch (e) {
-            res.json(e.message);
+            next(e);
         }
     }
 };

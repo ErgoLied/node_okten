@@ -1,6 +1,7 @@
 const User = require('../database/User');
 const passService = require('../services/password.service');
 const userUtil = require('../util/user.util');
+const {STATUS_CODE} = require('../configs');
 
 module.exports = {
     getUsers: async (req, res, next) => {
@@ -32,9 +33,12 @@ module.exports = {
     createUser: async (req, res, next) => {
         try {
             const hashPass = await passService.hash(req.body.password);
-            const newUser = await User.create({...req.body, password: hashPass});
+            await User.create({...req.body, password: hashPass});
 
-            res.json(`${newUser.name} was created`);
+            const user = await User.findOne({email: req.body.email}).lean();
+            const normUser = userUtil.userNormalize(user);
+
+            res.status(STATUS_CODE.CREATED).json(normUser);
         }
         catch (e) {
             next(e);
@@ -49,7 +53,7 @@ module.exports = {
 
             user = userUtil.userNormalize(user.toObject());
 
-            res.json(user);
+            res.status(STATUS_CODE.CREATED).json(user);
         }
         catch (e) {
             next(e);
@@ -61,7 +65,7 @@ module.exports = {
             const {userId} = req.params;
             await User.findByIdAndDelete(userId);
 
-            res.json(`USER ${userId} WAS DELETED`);
+            res.sendStatus(STATUS_CODE.NO_CONTENT);
         }
         catch (e) {
             next(e);

@@ -1,7 +1,7 @@
 const {userNormalize} = require('../util/user.util');
 
 module.exports = {
-    login: (req, res) => {
+    login: (req, res, next) => {
         try {
             const user = req.body;
 
@@ -9,7 +9,7 @@ module.exports = {
             res.json(normUser);
         }
         catch (e) {
-            res.json(e.message);
+            next(e);
         }
     }
 };
