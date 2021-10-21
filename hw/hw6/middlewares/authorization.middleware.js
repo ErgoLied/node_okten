@@ -1,28 +1,10 @@
-const User = require('../database/User');
-const OAuth = require('../database/OAuth');
+const {OAuth, User} = require('../database');
 const {passService, jwtService} = require('../services');
 const ErrorHandler = require('../errors/ErrorHandler');
-const tokenType = require('../configs/tokenType.enum');
-const {AUTHORIZATION} = require('../configs/constants');
+const {CONST, TOKEN_TYPE, ERR_MSG, STATUS_CODE} = require('../configs');
 const {authValidator} = require('../validators');
 
 module.exports = {
-    authBodyValidMW: (req, res, next) => {
-        try {
-            const {error, value} = authValidator.authValidate.validate(req.body);
-
-            if (error) {
-                throw new ErrorHandler('Wrong email or password', 400);
-            }
-
-            req.body = value;
-            next();
-        }
-        catch (e) {
-            res.json(e.message);
-        }
-    },
-
     authorizationMW: async (req, res, next) => {
         try {
             const {email, password} = req.body;
@@ -32,7 +14,7 @@ module.exports = {
                 .lean();
 
             if(!user){
-                throw new ErrorHandler('Wrong email or password', 400);
+                throw new ErrorHandler(ERR_MSG.WRONG_EMAIL_OR_PASSWORD, STATUS_CODE.BAD_REQUEST);
             }
 
             await passService.compare(password, user.password);
@@ -41,16 +23,32 @@ module.exports = {
             next();
         }
         catch (e) {
-            res.json(e.message);
+            next(e);
+        }
+    },
+
+    authBodyValidMW: (req, res, next) => {
+        try {
+            const {error, value} = authValidator.authValidate.validate(req.body);
+
+            if (error) {
+                throw new ErrorHandler(ERR_MSG.WRONG_EMAIL_OR_PASSWORD, STATUS_CODE.BAD_REQUEST);
+            }
+
+            req.body = value;
+            next();
+        }
+        catch (e) {
+            next(e);
         }
     },
 
     checkAccessToken: async (req, res, next) => {
         try {
-            const token = req.get(AUTHORIZATION);
+            const token = req.get(CONST.AUTHORIZATION);
 
             if(!token){
-                throw new ErrorHandler('invalid token', 401);
+                throw new ErrorHandler(ERR_MSG.INVALID_TOKEN, STATUS_CODE.UNAUTHORIZED);
             }
 
             await jwtService.verifyToken(token);
@@ -58,7 +56,7 @@ module.exports = {
             const tokenResponse = await OAuth.findOne({access_token: token}).populate('user_id');
 
             if(!tokenResponse){
-                throw new ErrorHandler('invalid token', 401);
+                throw new ErrorHandler(ERR_MSG.INVALID_TOKEN, STATUS_CODE.UNAUTHORIZED);
             }
 
             req.user = tokenResponse.user_id;
@@ -73,18 +71,18 @@ module.exports = {
 
     checkRefreshToken: async (req, res, next) => {
         try {
-            const token = req.get(AUTHORIZATION);
+            const token = req.get(CONST.AUTHORIZATION);
 
             if(!token){
-                throw new ErrorHandler('invalid token', 401);
+                throw new ErrorHandler(ERR_MSG.INVALID_TOKEN, STATUS_CODE.UNAUTHORIZED);
             }
 
-            await jwtService.verifyToken(token, tokenType.REFRESH);
+            await jwtService.verifyToken(token, TOKEN_TYPE.REFRESH);
 
             const tokenResponse = await OAuth.findOne({refresh_token: token}).populate('user_id');
 
             if(!tokenResponse){
-                throw new ErrorHandler('invalid token', 401);
+                throw new ErrorHandler(ERR_MSG.INVALID_TOKEN, STATUS_CODE.UNAUTHORIZED);
             }
 
             await OAuth.deleteOne({refresh_token: token});

@@ -1,9 +1,9 @@
 const {jwtService} = require('../services');
 const {userNormalize} = require('../util/user.util');
-const OAuth = require('../database/OAuth');
+const {OAuth} = require('../database');
 
 module.exports = {
-    login: async (req, res) => {
+    login: async (req, res, next) => {
         try {
             const {user} = req;
 
@@ -19,20 +19,20 @@ module.exports = {
             });
         }
         catch (e) {
-            res.json(e.message);
+            next(e);
         }
     },
 
-    logout: async (req, res) => {
+    logout: async (req, res, next) => {
         try {
             const {token} = req;
 
-            await OAuth.findOneAndDelete({access_token: token});
+            await OAuth.deleteOne({access_token: token});
 
             res.json('Good bye~');
         }
         catch (e) {
-            res.json(e.message);
+            next(e);
         }
     }
 };

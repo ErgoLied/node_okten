@@ -1,5 +1,6 @@
-const User = require('../database/User');
-const {userValidator} = require('../validators');
+const {User} = require('../database');
+const ErrorHandler = require('../errors/ErrorHandler');
+const {ERR_MSG, STATUS_CODE} = require('../configs');
 
 module.exports = {
     createUserMW: async (req, res, next) => {
@@ -8,15 +9,12 @@ module.exports = {
             const userEmail = await User.findOne({email});
 
             if (userEmail) {
-                return next({
-                    message: 'this email already exists!',
-                    status: 400
-                });
+                throw new ErrorHandler(ERR_MSG.EXISTING_EMAIL, STATUS_CODE.BAD_REQUEST);
             }
 
             next();
         } catch (e) {
-            res.json(e.message);
+            next(e);
         }
     },
 
@@ -26,51 +24,27 @@ module.exports = {
             const user = await User.findOne({_id: userId});
 
             if (!user) {
-                return next({
-                    message: 'user not found',
-                    status: 404
-                });
+                throw new ErrorHandler(ERR_MSG.USER_NOT_FOUND, STATUS_CODE.NOT_FOUND);
             }
 
             next();
         } catch (e) {
-            res.json(e.message);
+            next(e);
         }
     },
 
-    createUserBodyValidMW: (req, res, next) => {
+    isUserBodyValidMW: (validator) => (req, res, next) => {
         try {
-            const {error, value} = userValidator.createUserValidator.validate(req.body);
+            const {error, value} = validator.validate(req.body);
 
             if (error) {
-                return next({
-                    message: error.details[0].message,
-                    status: 400
-                });
+                throw new ErrorHandler(error.details[0].message, STATUS_CODE.BAD_REQUEST);
             }
 
             req.body = value;
             next();
         } catch (e) {
-            res.json(e.message);
-        }
-    },
-
-    updateUserBodyValidMW: (req, res, next) => {
-        try {
-            const {error, value} = userValidator.updateUserValidator.validate(req.body);
-
-            if (error) {
-                return next({
-                    message: error.details[0].message,
-                    status: 400
-                });
-            }
-
-            req.body = value;
-            next();
-        } catch (e) {
-            res.json(e.message);
+            next(e);
         }
     },
 
@@ -79,16 +53,12 @@ module.exports = {
             const {role} = req.user;
 
             if (!roleArray.includes(role)) {
-                next({
-                    message: 'Access denied',
-                    status: 400
-                });
-                return;
+                throw new ErrorHandler(ERR_MSG.ACCESS_DENIED, STATUS_CODE.BAD_REQUEST);
             }
 
             next();
         } catch (e) {
-            res.json(e.message);
+            next(e);
         }
     }
 };
