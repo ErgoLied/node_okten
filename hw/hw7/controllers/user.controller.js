@@ -67,7 +67,7 @@ module.exports = {
         try {
             const {userId} = req.params;
             const user = await User.findByIdAndDelete(userId);
-            await OAuth.deleteMany('user_iD: userId');
+            await OAuth.deleteMany({ user_id: userId });
 
             await emailService.sendMail(user.email, EMAIL_ACTION.DELETE_USER, {userName: user.name});
 
