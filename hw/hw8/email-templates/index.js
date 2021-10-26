@@ -21,4 +21,8 @@ module.exports = {
         templateName: 'delete-user',
         subject: 'Already leaving?'
     },
+    [EMAIL_ACTION.FORGOT_PASSWORD]:{
+        templateName: 'forgot-password',
+        subject: 'Return of lost memories'
+    },
 };

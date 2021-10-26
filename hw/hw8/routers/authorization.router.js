@@ -18,4 +18,7 @@ router.post(
 router.post('/refresh', authMW.checkRefreshToken, authController.login);
 router.post('/logout', authMW.checkAccessToken, authController.logout);
 
+router.post('/password/forgot', authController.sendMailForgotPassword);
+router.post('/password/forgot/set', authController.setNewPasswordAfterRefresh);
+
 module.exports = router;

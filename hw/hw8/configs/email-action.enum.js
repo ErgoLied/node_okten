@@ -3,5 +3,6 @@ module.exports = {
     DELETE_USER: 'deleteUser',
     UPDATE_USER: 'updateUser',
     LOG_IN: 'logIn',
-    LOG_OUT: 'logOut'
+    LOG_OUT: 'logOut',
+    FORGOT_PASSWORD: 'forgotPassword'
 };
